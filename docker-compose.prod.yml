@@ -1,0 +1,7 @@
+version: '2'
+services:
+  phoenix:
+    build:
+      dockerfile: Dockerfile.prod
+    ports:
+      - "4001:4001"

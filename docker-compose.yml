@@ -1,0 +1,19 @@
+version: '2'
+services:
+  phoenix:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:10.3-alpine
+    volumes:
+       - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+volumes:
+  db_data:
