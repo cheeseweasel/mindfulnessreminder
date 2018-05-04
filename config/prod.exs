@@ -59,6 +59,10 @@ config :logger, level: :info
 #     config :mindfulnessreminder, MindfulnessreminderWeb.Endpoint, server: true
 #
 
-# Finally import the config/prod.secret.exs
-# which should be versioned separately.
-import_config "prod.secret.exs"
+config :mindfulnessreminder, MindfulnessreminderWeb.Endpoint,
+  secret_key_base: "3TumdJbT7LHhUjcXC6strtey71jDK3LmRwGhsoG/hBKVXL3cUnoBz4LIp0nWT3MP"
+
+config :mindfulnessreminder, Mindfulnessreminder.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "mindfulnessreminder",
+  pool_size: 15
