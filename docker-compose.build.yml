@@ -2,6 +2,6 @@ version: '3.3'
 services:
   phoenix:
     build:
-      dockerfile: Dockerfile.build
+      dockerfile: Dockerfile.prod
     volumes:
       - .:/app
