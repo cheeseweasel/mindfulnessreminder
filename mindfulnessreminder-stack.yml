@@ -1,0 +1,54 @@
+version: '3.3'
+services:
+  phoenix:
+    image: cheeseweasel/mindfulnessreminder:%DEPLOY_TAG%
+    depends_on:
+      - postgres
+    networks:
+      - backend
+      - traefik-net
+    secrets:
+      - mindfulnessreminder_postgres_password
+      - mindfulnessreminder_postgres_username
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.protocol=http"
+      - "traefik.frontend.rule=Host:www.mindfulnessreminder.com"
+      - "traefik.domain=mercury"
+      - "traefik.docker.network=traefik-net"
+  postgres:
+    image: postgres:10.3-alpine
+    volumes:
+       - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/mindfulnessreminder_postgres_password
+      POSTGRES_USER_FILE: /run/secrets/mindfulnessreminder_postgres_username
+      POSTGRES_DB: mindfulnessreminder
+    secrets:
+      - mindfulnessreminder_postgres_password
+      - mindfulnessreminder_postgres_username
+    networks:
+      - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      replicas: 1
+      labels:
+        - "traefik.enable=false"
+volumes:
+  db_data:
+networks:
+  backend:
+    driver: overlay
+    attachable: true
+  traefik-net:
+    external:
+      name: traefik-net
+secrets:
+  mindfulnessreminder_postgres_username:
+    external: true
+  mindfulnessreminder_postgres_password:
+    external: true

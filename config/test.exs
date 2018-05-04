@@ -15,5 +15,5 @@ config :mindfulnessreminder, Mindfulnessreminder.Repo,
   username: "postgres",
   password: "postgres",
   database: "mindfulnessreminder_test",
-  hostname: "localhost",
+  hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox

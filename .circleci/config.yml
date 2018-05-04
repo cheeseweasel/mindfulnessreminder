@@ -1,0 +1,60 @@
+# Elixir CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-elixir/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.4-node
+        
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: docker-compose up -d phoenix
+      - run: |
+          docker run --network container:project_postgres_1 project_phoenix mix ecto.create
+          docker run --network container:project_postgres_1 project_phoenix mix ecto.migrate
+      - run: docker run --network container:project_postgres_1 project_phoenix mix test
+      - run: docker-compose up -d ember
+      - run: docker run --network container:project_ember_1 project_ember ember test
+  deploy:
+    docker:
+      - image: circleci/ruby:2.4-node
+        
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: echo 'export DEPLOY_TAG=${CIRCLE_BUILD_NUM}_${CIRCLE_SHA1:0:7}' >> $BASH_ENV
+      - run: |
+          docker-compose -f docker-compose.yml -f docker-compose.build.yml build
+      - run: |
+          docker tag project_phoenix cheeseweasel/dominator-back:${DEPLOY_TAG}
+          docker tag project_phoenix cheeseweasel/dominator-back:latest
+          docker tag project_ember cheeseweasel/dominator-front:${DEPLOY_TAG}
+          docker tag project_ember cheeseweasel/dominator-front:latest
+   
+          # log into Docker Hub so we can push our tagged images
+          docker login --password $DOCKER_PASSWORD --username $DOCKER_USER
+     
+          # push tagged images
+          docker push cheeseweasel/dominator-back:${DEPLOY_TAG}
+          docker push cheeseweasel/dominator-back:latest
+          docker push cheeseweasel/dominator-front:${DEPLOY_TAG}
+          docker push cheeseweasel/dominator-front:latest
+
+      - run: |
+          sed -i'' -e "s;%DEPLOY_TAG%;${DEPLOY_TAG};g" dominator-stack.yml
+          scp -o StrictHostKeyChecking=no dominator-stack.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:/home/cheeseweasel/apps/
+          bash .circleci/deploy.sh
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
