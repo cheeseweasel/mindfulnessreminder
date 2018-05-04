@@ -16,7 +16,7 @@ services:
       - "traefik.enable=true"
       - "traefik.port=80"
       - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:www.mindfulnessreminder.com"
+      - "traefik.frontend.rule=Host:www.mindfulnessreminder.com,mindfulnessreminder.com"
       - "traefik.domain=mercury"
       - "traefik.docker.network=traefik-net"
   postgres:
