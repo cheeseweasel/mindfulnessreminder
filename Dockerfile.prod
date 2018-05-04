@@ -15,7 +15,7 @@ WORKDIR /app
 # install dependencies
 RUN mix deps.get --only prod \
     && mix local.rebar --force \
-    && RUN MIX_ENV=prod mix compile
+    && MIX_ENV=prod mix compile
 
 # run phoenix in *prod* mode on port 4001
 CMD PORT=80 MIX_ENV=prod mix phx.server
