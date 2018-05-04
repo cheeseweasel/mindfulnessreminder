@@ -6,7 +6,6 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.4-node
-        
     steps:
       - setup_remote_docker
       - checkout
@@ -15,12 +14,10 @@ jobs:
           docker run --network container:project_postgres_1 project_phoenix mix ecto.create
           docker run --network container:project_postgres_1 project_phoenix mix ecto.migrate
       - run: docker run --network container:project_postgres_1 project_phoenix mix test
-      - run: docker-compose up -d ember
-      - run: docker run --network container:project_ember_1 project_ember ember test
   deploy:
     docker:
       - image: circleci/ruby:2.4-node
-        
+
     steps:
       - setup_remote_docker
       - checkout
@@ -28,23 +25,19 @@ jobs:
       - run: |
           docker-compose -f docker-compose.yml -f docker-compose.build.yml build
       - run: |
-          docker tag project_phoenix cheeseweasel/dominator-back:${DEPLOY_TAG}
-          docker tag project_phoenix cheeseweasel/dominator-back:latest
-          docker tag project_ember cheeseweasel/dominator-front:${DEPLOY_TAG}
-          docker tag project_ember cheeseweasel/dominator-front:latest
-   
+          docker tag project_phoenix cheeseweasel/mindfulnessreminder:${DEPLOY_TAG}
+          docker tag project_phoenix cheeseweasel/mindfulnessreminder:latest
+
           # log into Docker Hub so we can push our tagged images
           docker login --password $DOCKER_PASSWORD --username $DOCKER_USER
-     
+
           # push tagged images
-          docker push cheeseweasel/dominator-back:${DEPLOY_TAG}
-          docker push cheeseweasel/dominator-back:latest
-          docker push cheeseweasel/dominator-front:${DEPLOY_TAG}
-          docker push cheeseweasel/dominator-front:latest
+          docker push cheeseweasel/mindfulnessreminder:${DEPLOY_TAG}
+          docker push cheeseweasel/mindfulnessreminder:latest
 
       - run: |
-          sed -i'' -e "s;%DEPLOY_TAG%;${DEPLOY_TAG};g" dominator-stack.yml
-          scp -o StrictHostKeyChecking=no dominator-stack.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:/home/cheeseweasel/apps/
+          sed -i'' -e "s;%DEPLOY_TAG%;${DEPLOY_TAG};g" mindfulnessreminder-stack.yml
+          scp -o StrictHostKeyChecking=no mindfulnessreminder-stack.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:/home/cheeseweasel/apps/
           bash .circleci/deploy.sh
 
 workflows:
