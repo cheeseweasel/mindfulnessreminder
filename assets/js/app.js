@@ -20,10 +20,12 @@ import "phoenix_html"
 
 // import socket from "./socket"
 
-var notify = function() {
+import Push from 'push.js';
+
+const notify = () => {
   Push.create("Be Mindful!", {
     body: "Remember to be mindful"
   });
 }
 
-window.setInterval(notify, 15 * 60 * 1000);
+setInterval(notify, 15 * 60 * 1000);
