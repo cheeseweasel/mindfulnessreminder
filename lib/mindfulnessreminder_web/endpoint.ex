@@ -1,5 +1,9 @@
 defmodule MindfulnessreminderWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :mindfulnessreminder
+  
+  if Mix.env == :prod do
+    plug PlugCanonicalHost, canonical_host: "mindfulnessreminder.com"
+  end
 
   socket "/socket", MindfulnessreminderWeb.UserSocket
 

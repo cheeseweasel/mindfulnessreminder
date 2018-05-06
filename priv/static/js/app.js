@@ -1683,11 +1683,11 @@ require.register("push.js/bin/push.min.js", function(exports, require, module) {
   })();
 });
 require.register("js/app.js", function(exports, require, module) {
-'use strict';
+"use strict";
 
-require('phoenix_html');
+require("phoenix_html");
 
-var _push = require('push.js');
+var _push = require("push.js");
 
 var _push2 = _interopRequireDefault(_push);
 
@@ -1706,7 +1706,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-console.log('hello miss');
+var notify = function notify() {
+  _push2.default.create("Be Mindful!", {
+    body: "Remember to be mindful"
+  });
+};
 
 // Import local files
 //
@@ -1715,13 +1719,7 @@ console.log('hello miss');
 
 // import socket from "./socket"
 
-var notify = function notify() {
-  _push2.default.create("Be Mindful!", {
-    body: "Remember to be mindful"
-  });
-};
-
-window.setInterval(notify, 1 * 60 * 1000);
+setInterval(notify, 15 * 60 * 1000);
 
 });
 
