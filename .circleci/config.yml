@@ -37,7 +37,8 @@ jobs:
 
       - run: |
           sed -i'' -e "s;%DEPLOY_TAG%;${DEPLOY_TAG};g" mindfulnessreminder-stack.yml
-          scp -o StrictHostKeyChecking=no mindfulnessreminder-stack.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:/home/cheeseweasel/apps/
+          ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOSTNAME} mkdir -p /home/cheeseweasel/apps/mindfulnessreminder
+          scp -o StrictHostKeyChecking=no mindfulnessreminder-stack.yml ${SSH_USERNAME}@${SSH_HOSTNAME}:/home/cheeseweasel/apps/mindfulnessreminder/
           bash .circleci/deploy.sh
 
 workflows:

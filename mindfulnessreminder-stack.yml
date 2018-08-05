@@ -12,13 +12,12 @@ services:
       - mindfulnessreminder_postgres_username
     deploy:
       replicas: 1
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=80"
-      - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:www.mindfulnessreminder.com,mindfulnessreminder.com"
-      - "traefik.domain=mercury"
-      - "traefik.docker.network=traefik-net"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=80"
+        - "traefik.protocol=http"
+        - "traefik.frontend.rule=Host:www.mindfulnessreminder.com,mindfulnessreminder.com"
+        - "traefik.docker.network=traefik-net"
   postgres:
     image: postgres:10.3-alpine
     volumes:
